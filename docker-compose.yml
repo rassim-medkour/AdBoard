@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # MongoDB service
@@ -32,7 +32,6 @@ services:
       - ./mosquitto/log:/mosquitto/log
     networks:
       - adboard-network
-
   # Backend service
   backend:
     build:
@@ -53,8 +52,11 @@ services:
       JWT_SECRET: "change_this_to_a_secure_random_string"
       JWT_EXPIRY: "24h"
     volumes:
-      - ./AdBoard/backend:/app
+      - ./AdBoard/backend/src:/app/src
+      - ./AdBoard/backend/uploads:/app/uploads
       - /app/node_modules
+    command: >
+      sh -c "npm install && npm rebuild bcrypt --update-binary && npm run dev"
     depends_on:
       - mongodb
       - mosquitto

@@ -8,15 +8,15 @@ if ! docker info > /dev/null 2>&1; then
   exit 1
 fi
 
-# Determine environment (dev or prod)
-ENV=${1:-prod}
+# Starting in development mode
+echo "Starting in development mode..."
+docker-compose up -d
 
-if [ "$ENV" = "dev" ]; then
-  echo "Starting in DEVELOPMENT mode with live reloading..."
-  docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
-else
-  echo "Starting in PRODUCTION mode..."
-  docker-compose up -d
+# Show logs (optional)
+read -p "Do you want to see the logs? (y/n) " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+  docker-compose logs -f
 fi
 
 echo ""
