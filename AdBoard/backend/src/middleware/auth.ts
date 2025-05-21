@@ -1,11 +1,19 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { Secret } from "jsonwebtoken";
 import { User, IUser } from "../models";
 import { logger } from "../config/logger";
 
 // Define interfaces for request with user
 export interface AuthRequest extends Request {
   user?: IUser;
+}
+
+// Define the JWT payload structure
+interface JwtPayload {
+  userId: string;
+  // Add other fields that your token contains
+  iat?: number;
+  exp?: number;
 }
 
 /**
@@ -27,18 +35,18 @@ export const authenticateToken = async (
         .json({ message: "Access denied. No token provided." });
     }
 
-    // Verify token
+    // Verify token with proper typing
     jwt.verify(
       token,
-      process.env.JWT_SECRET as string,
+      process.env.JWT_SECRET as Secret,
       async (err, decoded) => {
         if (err) {
           return res.status(403).json({ message: "Invalid token" });
         }
 
         try {
-          // Get user from token payload
-          const userId = (decoded as any).userId;
+          // Get user from token payload with proper type
+          const { userId } = decoded as JwtPayload;
           const user = await User.findById(userId).select("-password");
 
           if (!user) {

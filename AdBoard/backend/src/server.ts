@@ -2,7 +2,7 @@ import express, { Express, Request, Response } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import dotenv from "dotenv";
-import { connectDB } from "./config/database";
+import { connectDB, disconnectDB } from "./config/database";
 import { logger } from "./config/logger";
 import * as mqtt from "./config/mqtt";
 import routes from "./routes";
@@ -53,16 +53,30 @@ async function startServer(): Promise<void> {
 }
 
 // Handle graceful shutdown
-process.on("SIGTERM", () => {
+process.on("SIGTERM", async () => {
   logger.info("SIGTERM signal received. Shutting down gracefully...");
-  // Close server, database connections, etc.
-  process.exit(0);
+  try {
+    // Close server, database connections, etc.
+    await mqtt.disconnect();
+    await disconnectDB();
+  } catch (error) {
+    logger.error("Error during shutdown:", error);
+  } finally {
+    process.exit(0);
+  }
 });
 
-process.on("SIGINT", () => {
+process.on("SIGINT", async () => {
   logger.info("SIGINT signal received. Shutting down gracefully...");
-  // Close server, database connections, etc.
-  process.exit(0);
+  try {
+    // Close server, database connections, etc.
+    await mqtt.disconnect();
+    await disconnectDB();
+  } catch (error) {
+    logger.error("Error during shutdown:", error);
+  } finally {
+    process.exit(0);
+  }
 });
 
 // Uncaught exception handler
