@@ -152,9 +152,7 @@ export const createUser = async (
       return res
         .status(400)
         .json({ message: "Username or email already exists" });
-    }
-
-    const user = new User({
+    }    const user = new User({
       username,
       email,
       password, // Note: In a real app, this should be hashed
@@ -167,7 +165,7 @@ export const createUser = async (
     const userResponse = user.toObject();
     const { password: _, ...userWithoutPassword } = userResponse;
 
-    return res.status(200).json(userWithoutPassword);
+    return res.status(201).json(userWithoutPassword);
   } catch (error) {
     const err = error as Error;
     logger.error(`Error creating user: ${err.message}`);

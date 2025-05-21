@@ -11,6 +11,7 @@ A lightweight, open-source digital signage ad server backend that enables real-t
 - Screen management and grouping
 - Scheduling and targeting capabilities
 - Comprehensive logging and monitoring
+- API documentation with Swagger/OpenAPI
 
 ## Tech Stack
 
@@ -19,6 +20,7 @@ A lightweight, open-source digital signage ad server backend that enables real-t
 - MongoDB with Mongoose ODM
 - MQTT for real-time communication
 - JWT for authentication
+- Swagger/OpenAPI for API documentation
 - Winston for logging
 - Docker & Docker Compose for containerization
 
@@ -55,6 +57,53 @@ docker-compose up -d --build backend
 2. Install dependencies with `npm install`
 3. Copy `.env.example` to `.env` and update variables as needed
 4. Run `npm run dev` for development
+
+## API Documentation
+
+The API is fully documented using Swagger/OpenAPI. You can access the interactive documentation at:
+
+```
+http://localhost:3000/api/docs
+```
+
+The Swagger UI provides:
+- Complete endpoint documentation
+- Request/response schema details
+- Authentication requirements
+- Interactive testing of API endpoints
+- Example requests and responses
+
+### Updating Documentation
+
+The API documentation is generated from JSDoc-style comments in the code. When adding or modifying endpoints:
+
+1. Add or update the Swagger JSDoc comments in the controller files
+2. Use proper annotations for parameters, request bodies, and responses
+3. Include examples where helpful
+4. Restart the server to see changes
+
+Example of a documented endpoint:
+
+```typescript
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of users
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/User'
+ */
+```
 
 ## Directory Structure
 

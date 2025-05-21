@@ -29,8 +29,9 @@ A complete digital signage solution with MQTT-based content delivery for distrib
    ./rebuild.sh
    ```
 4. Access the backend API at http://localhost:3000
-5. The MongoDB service is available at localhost:27017 (credentials: root/rootpassword)
-6. The MQTT broker is available at:
+5. Access the API documentation at http://localhost:3000/api/docs
+6. The MongoDB service is available at localhost:27017 (credentials: root/rootpassword)
+7. The MQTT broker is available at:
    - MQTT protocol: localhost:1883
    - WebSockets protocol: localhost:9001
 
@@ -74,3 +75,15 @@ docker-compose logs
 # View logs for a specific service
 docker-compose logs -f [service_name]
 ```
+
+## API Documentation
+
+The AdBoard backend includes comprehensive API documentation using Swagger/OpenAPI. 
+
+- Access the interactive API documentation at: http://localhost:3000/api/docs
+- The documentation provides detailed information about all available endpoints
+- You can test API endpoints directly from the Swagger UI
+- Authentication endpoints and schemas are fully documented
+- Available endpoints include users, devices, content, campaigns, and authentication
+
+For more details on how to update the documentation, refer to the [backend README](AdBoard/backend/README.md#api-documentation).
