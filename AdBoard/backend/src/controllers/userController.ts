@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { User } from "../models";
+import bcrypt from "bcrypt";
 import { logger } from "../config/logger";
 
 /**
@@ -155,7 +156,7 @@ export const createUser = async (
     }    const user = new User({
       username,
       email,
-      password, // Note: In a real app, this should be hashed
+      password: await bcrypt.hash(password, 10), // Hash the password securely
       role: role || "user",
     });
 
