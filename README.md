@@ -22,11 +22,11 @@ A complete digital signage solution with MQTT-based content delivery for distrib
 1. Clone this repository
 2. Start the entire stack:
    ```bash
-   docker-compose up -d
+   ./start.sh
    ```
-3. For development mode with hot-reloading:
+3. For rebuilding containers (after code changes):
    ```bash
-   docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+   ./rebuild.sh
    ```
 4. Access the backend API at http://localhost:3000
 5. The MongoDB service is available at localhost:27017 (credentials: root/rootpassword)
