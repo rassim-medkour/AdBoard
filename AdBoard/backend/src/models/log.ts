@@ -1,7 +1,7 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema } from "mongoose";
 
 export interface ILog extends Document {
-  level: 'info' | 'warn' | 'error';
+  level: "info" | "warn" | "error";
   message: string;
   deviceId?: string;
   campaignId?: mongoose.Types.ObjectId;
@@ -11,32 +11,35 @@ export interface ILog extends Document {
   updatedAt: Date;
 }
 
-const LogSchema: Schema = new Schema({
-  level: {
-    type: String,
-    enum: ['info', 'warn', 'error'],
-    default: 'info',
+const LogSchema: Schema = new Schema(
+  {
+    level: {
+      type: String,
+      enum: ["info", "warn", "error"],
+      default: "info",
+    },
+    message: {
+      type: String,
+      required: true,
+    },
+    deviceId: {
+      type: String,
+    },
+    campaignId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Campaign",
+    },
+    contentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Content",
+    },
+    metadata: {
+      type: Object,
+    },
   },
-  message: {
-    type: String,
-    required: true,
-  },
-  deviceId: {
-    type: String,
-  },
-  campaignId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Campaign',
-  },
-  contentId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Content',
-  },
-  metadata: {
-    type: Object,
-  },
-}, { 
-  timestamps: true 
-});
+  {
+    timestamps: true,
+  }
+);
 
-export default mongoose.model<ILog>('Log', LogSchema);
+export default mongoose.model<ILog>("Log", LogSchema);

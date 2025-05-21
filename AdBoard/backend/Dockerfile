@@ -10,6 +10,9 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
+# Rebuild bcrypt for the container architecture
+RUN npm rebuild bcrypt --update-binary
+
 # Bundle app source
 COPY . .
 

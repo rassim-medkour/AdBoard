@@ -1,11 +1,11 @@
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
-import { v4 as uuidv4 } from 'uuid';
-import { Request } from 'express';
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
+import { Request } from "express";
 
 // Create upload directory if it doesn't exist
-const uploadDir = path.join(__dirname, '../../uploads');
+const uploadDir = path.join(__dirname, "../../uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
@@ -19,13 +19,20 @@ const storage = multer.diskStorage({
     // Generate unique filename with original extension
     const uniqueFilename = `${uuidv4()}${path.extname(file.originalname)}`;
     cb(null, uniqueFilename);
-  }
+  },
 });
 
 // File filter to only accept images and videos
-const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+const fileFilter = (
+  req: Request,
+  file: Express.Multer.File,
+  cb: multer.FileFilterCallback
+) => {
   // Accept images and videos
-  if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
+  if (
+    file.mimetype.startsWith("image/") ||
+    file.mimetype.startsWith("video/")
+  ) {
     cb(null, true);
   } else {
     cb(null, false); // Reject file
@@ -36,9 +43,9 @@ const fileFilter = (req: Request, file: Express.Multer.File, cb: multer.FileFilt
 export const upload = multer({
   storage: storage,
   limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE || '10485760'), // Default 10MB
+    fileSize: parseInt(process.env.MAX_FILE_SIZE || "10485760"), // Default 10MB
   },
-  fileFilter: fileFilter
+  fileFilter: fileFilter,
 });
 
 /**
