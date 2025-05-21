@@ -19,6 +19,34 @@ A lightweight, open-source digital signage ad server backend that enables real-t
 - MQTT for real-time communication
 - JWT for authentication
 - Winston for logging
+- Docker & Docker Compose for containerization
+
+## Running with Docker
+
+The entire application stack can be run using Docker Compose:
+
+```bash
+# From the root directory (one level above backend)
+docker-compose up -d
+```
+
+This will start:
+
+- MongoDB database
+- Mosquitto MQTT broker
+- Backend API server
+
+To stop the containers:
+
+```bash
+docker-compose down
+```
+
+To rebuild the backend container after code changes:
+
+```bash
+docker-compose up -d --build backend
+```
 
 ## Setup & Installation
 

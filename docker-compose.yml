@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  # MongoDB service
+  mongodb:
+    image: mongo:6.0
+    container_name: adboard-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+      - ./mongodb/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    environment:
+      MONGO_INITDB_DATABASE: adboard
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+    networks:
+      - adboard-network
+
+  # MQTT (Mosquitto) service
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: adboard-mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    networks:
+      - adboard-network
+
+  # Backend service
+  backend:
+    build:
+      context: ./AdBoard/backend
+      dockerfile: Dockerfile
+    container_name: adboard-backend
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: "3000"
+      NODE_ENV: "development"
+      MONGODB_URI: "mongodb://root:rootpassword@mongodb:27017/adboard?authSource=admin"
+      MQTT_BROKER_URL: "mqtt://mosquitto:1883"
+      MQTT_USERNAME: "adboard"
+      MQTT_PASSWORD: "adboard_password"
+      MQTT_CLIENT_ID: "adboard-server"
+      JWT_SECRET: "change_this_to_a_secure_random_string"
+      JWT_EXPIRY: "24h"
+    volumes:
+      - ./AdBoard/backend:/app
+      - /app/node_modules
+    depends_on:
+      - mongodb
+      - mosquitto
+    networks:
+      - adboard-network
+
+# Persistent volumes
+volumes:
+  mongodb_data:
+
+# Networks
+networks:
+  adboard-network:
+    driver: bridge
