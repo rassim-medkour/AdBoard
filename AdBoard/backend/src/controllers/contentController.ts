@@ -2,6 +2,8 @@ import { Request, Response } from "express";
 import { Content, Campaign } from "../models";
 import { logger } from "../config/logger";
 import mongoose from "mongoose";
+import * as uploadUtils from "../utils/upload";
+import path from "path";
 
 /**
  * Get all content
@@ -41,14 +43,29 @@ export const getContentById = async (
 };
 
 /**
- * Create new content
+ * Create new content with file upload
  */
 export const createContent = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   try {
-    const { title, description, contentType, url, duration, status } = req.body;
+    const { title, description, contentType, duration, status } = req.body;
+
+    // File will be processed by multer middleware
+    if (!req.file && (contentType === "image" || contentType === "video")) {
+      return res
+        .status(400)
+        .json({ message: "File required for image or video content" });
+    }
+
+    // Determine the URL based on whether a file was uploaded
+    let url = req.body.url;
+
+    // If file was uploaded, use its path
+    if (req.file) {
+      url = `/uploads/${req.file.filename}`;
+    }
 
     const content = new Content({
       title,
@@ -69,20 +86,38 @@ export const createContent = async (
 };
 
 /**
- * Update content
+ * Update content with optional file replacement
  */
 export const updateContent = async (
   req: Request,
   res: Response
 ): Promise<Response> => {
   try {
-    const { title, description, contentType, url, duration, status } = req.body;
+    const { title, description, contentType, duration, status } = req.body;
+    let { url } = req.body;
 
     const content = await Content.findById(req.params.id);
     if (!content) {
       return res.status(404).json({ message: "Content not found" });
     }
 
+    // If new file is uploaded, update URL and delete old file if it was an upload
+    if (req.file) {
+      // If previous content was an uploaded file, delete it
+      if (content.url.startsWith("/uploads/")) {
+        const oldFilename = path.basename(content.url);
+        try {
+          await uploadUtils.deleteFile(oldFilename);
+        } catch (err) {
+          logger.warn(`Could not delete old file: ${oldFilename}`);
+        }
+      }
+
+      // Set new URL to uploaded file
+      url = `/uploads/${req.file.filename}`;
+    }
+
+    // Update content fields
     if (title) content.title = title;
     if (description) content.description = description;
     if (contentType)
@@ -101,7 +136,7 @@ export const updateContent = async (
 };
 
 /**
- * Delete content
+ * Delete content and associated file
  */
 export const deleteContent = async (
   req: Request,
@@ -119,13 +154,23 @@ export const deleteContent = async (
       });
     }
 
-    const content = await Content.findByIdAndDelete(req.params.id);
+    const content = await Content.findById(req.params.id);
     if (!content) {
       return res.status(404).json({ message: "Content not found" });
     }
 
-    return res.status(200).json({ message: "Content deleted successfully" });
-  } catch (error) {
+    // If content URL is from uploads, delete the file
+    if (content.url.startsWith("/uploads/")) {
+      const filename = path.basename(content.url);
+      try {
+        await uploadUtils.deleteFile(filename);
+      } catch (err) {
+        logger.warn(`Could not delete file: ${filename}`);
+      }
+    }
+
+    await Content.findByIdAndDelete(req.params.id);
+    return res.status(200).json({ message: "Content deleted successfully" });  } catch (error) {
     const err = error as Error;
     logger.error(`Error deleting content: ${err.message}`);
     return res.status(500).json({ message: "Internal server error" });

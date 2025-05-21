@@ -4,7 +4,6 @@ import deviceRoutes from "./deviceRoutes";
 import contentRoutes from "./contentRoutes";
 import campaignRoutes from "./campaignRoutes";
 import authRoutes from "./authRoutes";
-import uploadRoutes from "./uploadRoutes";
 
 const router = express.Router();
 
@@ -19,7 +18,6 @@ router.get("/", (req, res) => {
       "/api/devices",
       "/api/content",
       "/api/campaigns",
-      "/api/uploads",
     ],
   });
 });
@@ -30,6 +28,5 @@ router.use("/users", userRoutes);
 router.use("/devices", deviceRoutes);
 router.use("/content", contentRoutes);
 router.use("/campaigns", campaignRoutes);
-router.use("/uploads", uploadRoutes);
 
 export default router;
