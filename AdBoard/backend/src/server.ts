@@ -7,6 +7,8 @@ import { logger } from "./config/logger";
 import * as mqtt from "./config/mqtt";
 import routes from "./routes";
 import path from "path";
+import swaggerUi from "swagger-ui-express";
+import swaggerJSDoc from "swagger-jsdoc";
 
 // Load environment variables
 dotenv.config();
@@ -23,6 +25,29 @@ app.use(express.urlencoded({ extended: true }));
 
 // Static files for uploads
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+// Swagger setup
+const swaggerOptions = {
+  swaggerDefinition: {
+    openapi: "3.0.0",
+    info: {
+      title: "AdBoard API",
+      version: "1.0.0",
+      description: "API documentation for the AdBoard digital signage system",
+    },
+    servers: [
+      {
+        url: "http://localhost:3000",
+        description: "Development server",
+      },
+    ],
+  },
+  apis: ["./src/routes/*.ts", "./src/models/*.ts", "./src/controllers/*.ts"],
+};
+
+const swaggerDocs = swaggerJSDoc(swaggerOptions);
+app.use("/swagger", swaggerUi.serve);
+app.get("/swagger", swaggerUi.setup(swaggerDocs));
 
 // API Routes
 app.use("/api", routes);

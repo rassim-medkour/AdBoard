@@ -4,6 +4,7 @@ import deviceRoutes from "./deviceRoutes";
 import contentRoutes from "./contentRoutes";
 import campaignRoutes from "./campaignRoutes";
 import authRoutes from "./authRoutes";
+import swaggerRoutes from "./swaggerRoutes";
 
 const router = express.Router();
 
@@ -18,6 +19,7 @@ router.get("/", (req, res) => {
       "/api/devices",
       "/api/content",
       "/api/campaigns",
+      "/api/docs", // Added Swagger docs endpoint
     ],
   });
 });
@@ -28,5 +30,6 @@ router.use("/users", userRoutes);
 router.use("/devices", deviceRoutes);
 router.use("/content", contentRoutes);
 router.use("/campaigns", campaignRoutes);
+router.use("/docs", swaggerRoutes); // Mount swagger routes
 
 export default router;
