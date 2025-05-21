@@ -7,6 +7,22 @@ import path from "path";
 
 /**
  * Get all content
+ * @swagger
+ * /api/content:
+ *   get:
+ *     summary: Get all content
+ *     tags: [Content]
+ *     responses:
+ *       200:
+ *         description: List of content
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Content'
+ *       500:
+ *         description: Server error
  */
 export const getAllContent = async (
   req: Request,
