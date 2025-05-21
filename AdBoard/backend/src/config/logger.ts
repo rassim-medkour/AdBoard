@@ -1,5 +1,5 @@
-const winston = require('winston');
-const path = require('path');
+import winston from 'winston';
+import path from 'path';
 
 // Define log format
 const logFormat = winston.format.combine(
@@ -10,7 +10,7 @@ const logFormat = winston.format.combine(
 );
 
 // Create the logger instance
-const logger = winston.createLogger({
+export const logger = winston.createLogger({
   level: process.env.LOG_LEVEL || 'info',
   format: logFormat,
   defaultMeta: { service: 'adboard-server' },
@@ -42,16 +42,14 @@ const logger = winston.createLogger({
 // If we're not in production, also log to the console with simple formatting
 if (process.env.NODE_ENV !== 'production') {
   logger.add(new winston.transports.Console({
-    format: winston.format.simple()
+    format: winston.format.combine(
+      winston.format.colorize(),
+      winston.format.simple()
+    )
   }));
 }
 
 // Create a stream object with a write function that will be used by Morgan
-const stream = {
-  write: (message) => logger.http(message.trim())
-};
-
-module.exports = {
-  logger,
-  stream
+export const stream = {
+  write: (message: string): void => logger.http(message.trim())
 };

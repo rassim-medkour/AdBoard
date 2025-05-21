@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./AdBoard/backend
+      dockerfile: Dockerfile.prod
+    environment:
+      NODE_ENV: "production"
+      
+  # Add other production-specific overrides here

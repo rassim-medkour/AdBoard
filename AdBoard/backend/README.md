@@ -14,6 +14,7 @@ A lightweight, open-source digital signage ad server backend that enables real-t
 
 ## Tech Stack
 
+- TypeScript
 - Node.js & Express.js
 - MongoDB with Mongoose ODM
 - MQTT for real-time communication
@@ -65,12 +66,20 @@ src/
  ├── models/       # Mongoose models
  ├── routes/       # Express routes
  ├── services/     # Business logic
+ ├── types/        # TypeScript type definitions
  ├── utils/        # Utility functions
- └── server.js     # Entry point
+ └── server.ts     # Entry point
 ```
 
 ## Scripts
 
 - `npm start`: Start production server
+- `npm run build`: Build TypeScript code
 - `npm run dev`: Start development server with hot reload
 - `npm test`: Run tests
+- `npm run lint`: Run ESLint
+- `npm run clean`: Clean build directory
+- `npm run docker:up`: Start Docker containers
+- `npm run docker:down`: Stop Docker containers
+- `npm run docker:logs`: View Docker container logs
+- `npm run docker:prod`: Start Docker containers in production mode

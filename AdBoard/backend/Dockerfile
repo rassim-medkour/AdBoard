@@ -13,8 +13,14 @@ RUN npm install
 # Bundle app source
 COPY . .
 
+# Build TypeScript code
+RUN npm run build
+
+# Create uploads directory
+RUN mkdir -p uploads
+
 # Expose API port
 EXPOSE 3000
 
-# Command to run the app
+# Command to run the app in development mode
 CMD ["npm", "run", "dev"]

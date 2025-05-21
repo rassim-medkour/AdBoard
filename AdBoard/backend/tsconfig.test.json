@@ -1,0 +1,5 @@
+// Import src
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/**/*.test.ts", "jest.config.ts"]
+}

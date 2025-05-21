@@ -1,12 +1,21 @@
-const mqtt = require('mqtt');
-const { logger } = require('./logger');
+import mqtt from 'mqtt';
+import { logger } from './logger';
 
-let client = null;
+let client: mqtt.MqttClient | null = null;
+
+interface MqttOptions {
+  clientId: string;
+  clean: boolean;
+  connectTimeout: number;
+  username?: string;
+  password?: string;
+  reconnectPeriod: number;
+}
 
 /**
  * Connect to the MQTT broker
  */
-const connect = () => {
+export const connect = (): Promise<mqtt.MqttClient> => {
   return new Promise((resolve, reject) => {
     try {
       // Get MQTT configuration from environment variables
@@ -18,7 +27,7 @@ const connect = () => {
       } = process.env;
 
       // Configure MQTT connection options
-      const options = {
+      const options: MqttOptions = {
         clientId: MQTT_CLIENT_ID || `adboard-server-${Math.random().toString(16).substr(2, 8)}`,
         clean: true,
         connectTimeout: 4000,
@@ -30,44 +39,38 @@ const connect = () => {
       // Connect to MQTT broker
       client = mqtt.connect(MQTT_BROKER_URL, options);
 
-      // Handle connection events
       client.on('connect', () => {
         logger.info(`Connected to MQTT broker: ${MQTT_BROKER_URL}`);
         
-        // Subscribe to key topics
-        client.subscribe('adboard/screens/+/status', { qos: 1 });
-        client.subscribe('adboard/screens/+/logs', { qos: 0 });
+        // Subscribe to relevant topics
+        client!.subscribe('adboard/devices/#', { qos: 1 }, (err) => {
+          if (!err) {
+            logger.info('Subscribed to device topics');
+          } else {
+            logger.error(`Error subscribing to device topics: ${err.message}`);
+          }
+        });
         
-        logger.info('Subscribed to core MQTT topics');
-        resolve();
+        resolve(client!);
       });
 
-      // Handle error events
       client.on('error', (err) => {
-        logger.error(`MQTT client error: ${err.message}`);
+        logger.error(`MQTT connection error: ${err.message}`);
         reject(err);
       });
 
-      // Handle incoming messages
-      client.on('message', (topic, message) => {
-        logger.debug(`MQTT message received on ${topic}: ${message.toString()}`);
-        
-        // Process messages based on topic
-        if (topic.match(/adboard\/screens\/.*\/status/)) {
-          const screenId = topic.split('/')[2];
-          try {
-            const status = JSON.parse(message.toString());
-            // Will handle screen status updates in a dedicated service
-            logger.info(`Screen ${screenId} reported status: ${status.state}`);
-          } catch (error) {
-            logger.error(`Error parsing status message from screen ${screenId}: ${error.message}`);
-          }
-        }
+      client.on('offline', () => {
+        logger.warn('MQTT client offline');
       });
-      
+
+      client.on('reconnect', () => {
+        logger.info('MQTT client reconnecting');
+      });
+
     } catch (error) {
-      logger.error(`Failed to connect to MQTT broker: ${error.message}`);
-      reject(error);
+      const err = error as Error;
+      logger.error(`Error setting up MQTT: ${err.message}`);
+      reject(err);
     }
   });
 };
@@ -75,15 +78,15 @@ const connect = () => {
 /**
  * Disconnect from the MQTT broker
  */
-const disconnect = () => {
+export const disconnect = (): Promise<void> => {
   return new Promise((resolve) => {
     if (client && client.connected) {
-      client.end(true, () => {
+      client.end(false, () => {
         logger.info('Disconnected from MQTT broker');
         resolve();
       });
     } else {
-      logger.info('No active MQTT connection to disconnect');
+      logger.warn('MQTT client not connected, nothing to disconnect');
       resolve();
     }
   });
@@ -97,7 +100,11 @@ const disconnect = () => {
  * @param {object} options - MQTT publish options
  * @returns {Promise<void>}
  */
-const publish = (topic, message, options = { qos: 1, retain: false }) => {
+export const publish = (
+  topic: string, 
+  message: object | string, 
+  options: mqtt.IClientPublishOptions = { qos: 1, retain: false }
+): Promise<void> => {
   return new Promise((resolve, reject) => {
     if (!client || !client.connected) {
       reject(new Error('MQTT client not connected'));
@@ -118,9 +125,7 @@ const publish = (topic, message, options = { qos: 1, retain: false }) => {
   });
 };
 
-module.exports = {
-  connect,
-  disconnect,
-  publish,
-  getClient: () => client
-};
+/**
+ * Get MQTT client instance
+ */
+export const getClient = (): mqtt.MqttClient | null => client;
