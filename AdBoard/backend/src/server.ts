@@ -7,6 +7,7 @@ import { logger } from "./config/logger";
 import * as mqtt from "./config/mqtt";
 import routes from "./routes";
 import path from "path";
+import { setupSwagger } from "./config/swagger";
 
 // Load environment variables
 dotenv.config();
@@ -23,6 +24,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // Static files for uploads
 app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
+
+// Setup Swagger documentation
+setupSwagger(app);
 
 // API Routes
 app.use("/api", routes);

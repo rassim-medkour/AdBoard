@@ -18,6 +18,7 @@ router.get("/", (req, res) => {
       "/api/devices",
       "/api/content",
       "/api/campaigns",
+      "/api/docs", // Added Swagger docs endpoint
     ],
   });
 });

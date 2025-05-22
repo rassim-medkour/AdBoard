@@ -5,6 +5,26 @@ import mongoose from "mongoose";
 
 /**
  * Get all campaigns
+ * @swagger
+ * /api/campaigns:
+ *   get:
+ *     summary: Get all campaigns
+ *     tags: [Campaigns]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of campaigns
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Campaign'
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
  */
 export const getAllCampaigns = async (
   req: Request,
@@ -16,12 +36,38 @@ export const getAllCampaigns = async (
   } catch (error) {
     const err = error as Error;
     logger.error(`Error getting campaigns: ${err.message}`);
-    return res.status(500).json({ message: "Internal server error" });
-  }
+    return res.status(500).json({ message: "Internal server error" });  }
 };
 
 /**
  * Get campaign by ID
+ * @swagger
+ * /api/campaigns/{id}:
+ *   get:
+ *     summary: Get campaign by ID
+ *     tags: [Campaigns]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Campaign ID
+ *     responses:
+ *       200:
+ *         description: Campaign details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Campaign'
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Campaign not found
+ *       500:
+ *         description: Server error
  */
 export const getCampaignById = async (
   req: Request,
@@ -38,12 +84,72 @@ export const getCampaignById = async (
   } catch (error) {
     const err = error as Error;
     logger.error(`Error getting campaign: ${err.message}`);
-    return res.status(500).json({ message: "Internal server error" });
-  }
+    return res.status(500).json({ message: "Internal server error" });  }
 };
 
 /**
  * Create new campaign
+ * @swagger
+ * /api/campaigns:
+ *   post:
+ *     summary: Create a new campaign
+ *     tags: [Campaigns]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - status
+ *               - startDate
+ *               - endDate
+ *               - targetDevices
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Campaign name
+ *               description:
+ *                 type: string
+ *                 description: Campaign description
+ *               status:
+ *                 type: string
+ *                 enum: [draft, active, paused, completed]
+ *                 description: Campaign status
+ *               startDate:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Campaign start date
+ *               endDate:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Campaign end date
+ *               targetDevices:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Array of device IDs targeted by this campaign
+ *               contents:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Array of content IDs included in this campaign
+ *     responses:
+ *       201:
+ *         description: Campaign created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Campaign'
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
  */
 export const createCampaign = async (
   req: Request,
@@ -87,12 +193,75 @@ export const createCampaign = async (
   } catch (error) {
     const err = error as Error;
     logger.error(`Error creating campaign: ${err.message}`);
-    return res.status(500).json({ message: "Internal server error" });
-  }
+    return res.status(500).json({ message: "Internal server error" });  }
 };
 
 /**
  * Update campaign
+ * @swagger
+ * /api/campaigns/{id}:
+ *   put:
+ *     summary: Update a campaign
+ *     tags: [Campaigns]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Campaign ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Campaign name
+ *               description:
+ *                 type: string
+ *                 description: Campaign description
+ *               status:
+ *                 type: string
+ *                 enum: [draft, active, paused, completed]
+ *                 description: Campaign status
+ *               startDate:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Campaign start date
+ *               endDate:
+ *                 type: string
+ *                 format: date-time
+ *                 description: Campaign end date
+ *               targetDevices:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Array of device IDs targeted by this campaign
+ *               contents:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 description: Array of content IDs included in this campaign
+ *     responses:
+ *       200:
+ *         description: Campaign updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Campaign'
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Campaign not found
+ *       500:
+ *         description: Server error
  */
 export const updateCampaign = async (
   req: Request,
@@ -153,6 +322,29 @@ export const updateCampaign = async (
 
 /**
  * Delete campaign
+ * @swagger
+ * /api/campaigns/{id}:
+ *   delete:
+ *     summary: Delete a campaign
+ *     tags: [Campaigns]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Campaign ID
+ *     responses:
+ *       200:
+ *         description: Campaign deleted successfully
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Campaign not found
+ *       500:
+ *         description: Server error
  */
 export const deleteCampaign = async (
   req: Request,
@@ -167,12 +359,38 @@ export const deleteCampaign = async (
   } catch (error) {
     const err = error as Error;
     logger.error(`Error deleting campaign: ${err.message}`);
-    return res.status(500).json({ message: "Internal server error" });
-  }
+    return res.status(500).json({ message: "Internal server error" });  }
 };
 
 /**
  * Get campaigns for a device
+ * @swagger
+ * /api/campaigns/device/{deviceId}:
+ *   get:
+ *     summary: Get all active campaigns for a device
+ *     tags: [Campaigns]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: deviceId
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Device ID
+ *     responses:
+ *       200:
+ *         description: List of campaigns for the device
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Campaign'
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
  */
 export const getDeviceCampaigns = async (
   req: Request,
