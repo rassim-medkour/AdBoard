@@ -40,6 +40,29 @@ export const getAllContent = async (
 
 /**
  * Get content by ID
+ * @swagger
+ * /api/content/{id}:
+ *   get:
+ *     summary: Get content by ID
+ *     tags: [Content]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Content ID
+ *     responses:
+ *       200:
+ *         description: Content details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Content'
+ *       404:
+ *         description: Content not found
+ *       500:
+ *         description: Server error
  */
 export const getContentById = async (
   req: Request,
@@ -60,6 +83,60 @@ export const getContentById = async (
 
 /**
  * Create new content with file upload
+ * @swagger
+ * /api/content:
+ *   post:
+ *     summary: Create new content
+ *     tags: [Content]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Content title
+ *               description:
+ *                 type: string
+ *                 description: Content description
+ *               contentType:
+ *                 type: string
+ *                 enum: [image, video, html, url]
+ *                 description: Type of content
+ *               url:
+ *                 type: string
+ *                 description: URL for external content (required for html and url types)
+ *               duration:
+ *                 type: number
+ *                 description: Duration to display content in seconds
+ *               status:
+ *                 type: string
+ *                 enum: [active, inactive]
+ *                 description: Content status
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: File to upload (required for image and video types)
+ *             required:
+ *               - title
+ *               - contentType
+ *     responses:
+ *       201:
+ *         description: Content created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Content'
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Unauthorized
+ *       500:
+ *         description: Server error
  */
 export const createContent = async (
   req: Request,
@@ -103,6 +180,65 @@ export const createContent = async (
 
 /**
  * Update content with optional file replacement
+ * @swagger
+ * /api/content/{id}:
+ *   put:
+ *     summary: Update content
+ *     tags: [Content]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Content ID
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 description: Content title
+ *               description:
+ *                 type: string
+ *                 description: Content description
+ *               contentType:
+ *                 type: string
+ *                 enum: [image, video, html, url]
+ *                 description: Type of content
+ *               url:
+ *                 type: string
+ *                 description: URL for external content
+ *               duration:
+ *                 type: number
+ *                 description: Duration to display content in seconds
+ *               status:
+ *                 type: string
+ *                 enum: [active, inactive]
+ *                 description: Content status
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: New file to upload (optional)
+ *     responses:
+ *       200:
+ *         description: Content updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Content'
+ *       400:
+ *         description: Invalid input
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Content not found
+ *       500:
+ *         description: Server error
  */
 export const updateContent = async (
   req: Request,
@@ -153,6 +289,31 @@ export const updateContent = async (
 
 /**
  * Delete content and associated file
+ * @swagger
+ * /api/content/{id}:
+ *   delete:
+ *     summary: Delete content
+ *     tags: [Content]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Content ID
+ *     responses:
+ *       200:
+ *         description: Content deleted successfully
+ *       400:
+ *         description: Cannot delete content used in campaigns
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Content not found
+ *       500:
+ *         description: Server error
  */
 export const deleteContent = async (
   req: Request,
