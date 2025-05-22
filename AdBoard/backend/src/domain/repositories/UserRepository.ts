@@ -1,9 +1,5 @@
 import { BaseRepository } from "./BaseRepository";
-import {
-  UserEntity,
-  CreateUserDto,
-  UpdateUserDto,
-} from "../entities/UserEntity";
+import { UserEntity, UpdateUserDto } from "../entities/UserEntity";
 
 /**
  * User repository interface
