@@ -51,20 +51,20 @@ const options = {
 };
 
 // Initialize swagger-jsdoc
-const swaggerSpec = swaggerJSDoc(options);
+export const swaggerSpec = swaggerJSDoc(options);
 
 /**
  * Function to setup Swagger UI
  */
 export const setupSwagger = (app: Express): void => {
   // Serve swagger docs
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   
   // Serve swagger spec as JSON
-  app.get('/swagger.json', (req, res) => {
+  app.get('/api/swagger.json', (req, res) => {
     res.setHeader('Content-Type', 'application/json');
     res.send(swaggerSpec);
   });
 
-  console.log('🔄 Swagger documentation available at /api-docs');
+  console.log('🔄 Swagger documentation available at /api/docs');
 };
