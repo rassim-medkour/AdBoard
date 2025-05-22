@@ -59,7 +59,7 @@ router.get("/:id", deviceController.getDeviceById);
 
 /**
  * @swagger
- * /api/devices/by-device-id/{deviceId}:
+ * /api/devices/device/{deviceId}:
  *   get:
  *     summary: Get device by unique device identifier
  *     tags: [Devices]
@@ -82,7 +82,7 @@ router.get("/:id", deviceController.getDeviceById);
  *       500:
  *         description: Server error
  */
-router.get("/by-device-id/:deviceId", deviceController.getDeviceByDeviceId);
+router.get("/device/:deviceId", deviceController.getDeviceByDeviceId);
 
 /**
  * @swagger

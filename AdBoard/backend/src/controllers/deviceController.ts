@@ -35,7 +35,8 @@ export const getAllDevices = async (
   } catch (error) {
     const err = error as Error;
     logger.error(`Error getting devices: ${err.message}`);
-    return res.status(500).json({ message: "Internal server error" });  }
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 /**
@@ -81,7 +82,8 @@ export const getDeviceById = async (
   } catch (error) {
     const err = error as Error;
     logger.error(`Error getting device: ${err.message}`);
-    return res.status(500).json({ message: "Internal server error" });  }
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 /**
@@ -214,7 +216,8 @@ export const createDevice = async (
   } catch (error) {
     const err = error as Error;
     logger.error(`Error creating device: ${err.message}`);
-    return res.status(500).json({ message: "Internal server error" });  }
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 /**
@@ -302,7 +305,8 @@ export const updateDevice = async (
   } catch (error) {
     const err = error as Error;
     logger.error(`Error updating device: ${err.message}`);
-    return res.status(500).json({ message: "Internal server error" });  }
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 /**
@@ -371,7 +375,8 @@ export const updateDeviceStatus = async (
   } catch (error) {
     const err = error as Error;
     logger.error(`Error updating device status: ${err.message}`);
-    return res.status(500).json({ message: "Internal server error" });  }
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
 /**
