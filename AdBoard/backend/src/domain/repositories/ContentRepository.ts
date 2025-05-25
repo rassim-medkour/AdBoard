@@ -1,5 +1,9 @@
-import { BaseRepository } from './BaseRepository';
-import { ContentEntity, CreateContentDto, UpdateContentDto } from '../entities/ContentEntity';
+import { BaseRepository } from "./BaseRepository";
+import {
+  ContentEntity,
+  CreateContentDto,
+  UpdateContentDto,
+} from "../entities/ContentEntity";
 
 /**
  * Content repository interface
@@ -11,15 +15,17 @@ export interface ContentRepository extends BaseRepository<ContentEntity> {
    * @param type - The content type to filter by
    * @returns Promise resolving to an array of content
    */
-  findByType(type: 'image' | 'video' | 'html' | 'url'): Promise<ContentEntity[]>;
-  
+  findByType(
+    type: "image" | "video" | "html" | "url"
+  ): Promise<ContentEntity[]>;
+
   /**
    * Find content by status
    * @param status - The status to filter by
    * @returns Promise resolving to an array of content
    */
-  findByStatus(status: 'active' | 'inactive'): Promise<ContentEntity[]>;
-  
+  findByStatus(status: "active" | "inactive"): Promise<ContentEntity[]>;
+
   /**
    * Find content associated with a campaign
    * @param campaignId - The campaign ID
