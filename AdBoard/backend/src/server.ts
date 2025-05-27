@@ -8,7 +8,8 @@ import * as mqtt from "./config/mqtt";
 import routes from "./routes";
 import path from "path";
 import { setupSwagger } from "./config/swagger";
-
+import { MongoContentRepository } from "./repositories/MongoContentRepository";
+import { ContentService } from "./services/ContentService";
 // Load environment variables
 dotenv.config();
 
@@ -45,6 +46,10 @@ async function startServer(): Promise<void> {
     // Connect to MQTT broker
     await mqtt.connect();
 
+    // initialize repos and services
+    await initializeRepositories();
+    await initializeServices();
+
     // Start listening
     app.listen(PORT, () => {
       logger.info(`Server is running on port ${PORT}`);
@@ -56,6 +61,29 @@ async function startServer(): Promise<void> {
   }
 }
 
+// Crate Repositories and Services
+
+async function initializeRepositories(): Promise<void> {
+  // Import repositories and services here
+  const contentRepository = new MongoContentRepository();
+
+  //Store Reporistories in application context
+  app.locals.repositories = {
+    contentRepository,
+  };
+}
+
+async function initializeServices(): Promise<void> {
+  // create services using the repositories
+  const contentService = new ContentService(
+    app.locals.repositories.contentRepository
+  );
+
+  //store services in application context
+  app.locals.services = {
+    contentService,
+  };
+}
 // Handle graceful shutdown
 process.on("SIGTERM", async () => {
   logger.info("SIGTERM signal received. Shutting down gracefully...");
