@@ -5,17 +5,18 @@ import dotenv from "dotenv";
 import { connectDB, disconnectDB } from "./config/database";
 import { logger } from "./config/logger";
 import * as mqtt from "./config/mqtt";
-import routes from "./routes";
+import { createRoutes } from "./routes";
 import path from "path";
 import { setupSwagger } from "./config/swagger";
-import { MongoContentRepository } from "./repositories/MongoContentRepository";
-import { ContentService } from "./services/ContentService";
+import { DependencyContainer } from "./container/DependencyContainer";
+import { config } from "./config/app";
+
 // Load environment variables
 dotenv.config();
 
 // Initialize Express app
 const app: Express = express();
-const PORT: number = parseInt(process.env.PORT || "3000", 10);
+const PORT: number = config.port;
 
 // Middleware
 app.use(helmet());
@@ -28,9 +29,6 @@ app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 // Setup Swagger documentation
 setupSwagger(app);
-
-// API Routes
-app.use("/api", routes);
 
 // Basic route for testing
 app.get("/", (req: Request, res: Response) => {
@@ -46,9 +44,10 @@ async function startServer(): Promise<void> {
     // Connect to MQTT broker
     await mqtt.connect();
 
-    // initialize repos and services
-    await initializeRepositories();
-    await initializeServices();
+    // Initialize dependency container and create routes
+    const container = DependencyContainer.getInstance();
+    const routes = createRoutes(container.getControllers());
+    app.use("/api", routes);
 
     // Start listening
     app.listen(PORT, () => {
@@ -61,29 +60,6 @@ async function startServer(): Promise<void> {
   }
 }
 
-// Crate Repositories and Services
-
-async function initializeRepositories(): Promise<void> {
-  // Import repositories and services here
-  const contentRepository = new MongoContentRepository();
-
-  //Store Reporistories in application context
-  app.locals.repositories = {
-    contentRepository,
-  };
-}
-
-async function initializeServices(): Promise<void> {
-  // create services using the repositories
-  const contentService = new ContentService(
-    app.locals.repositories.contentRepository
-  );
-
-  //store services in application context
-  app.locals.services = {
-    contentService,
-  };
-}
 // Handle graceful shutdown
 process.on("SIGTERM", async () => {
   logger.info("SIGTERM signal received. Shutting down gracefully...");
@@ -91,6 +67,9 @@ process.on("SIGTERM", async () => {
     // Close server, database connections, etc.
     await mqtt.disconnect();
     await disconnectDB();
+
+    // Reset dependency container
+    DependencyContainer.getInstance().reset();
   } catch (error) {
     logger.error("Error during shutdown:", error);
   } finally {
@@ -104,6 +83,9 @@ process.on("SIGINT", async () => {
     // Close server, database connections, etc.
     await mqtt.disconnect();
     await disconnectDB();
+
+    // Reset dependency container
+    DependencyContainer.getInstance().reset();
   } catch (error) {
     logger.error("Error during shutdown:", error);
   } finally {
