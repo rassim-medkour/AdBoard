@@ -1,5 +1,9 @@
 import { ContentRepository } from "../domain/repositories/ContentRepository";
-import { ContentEntity, CreateContentDto, UpdateContentDto } from "../domain/entities/ContentEntity";
+import {
+  ContentEntity,
+  CreateContentDto,
+  UpdateContentDto,
+} from "../domain/entities/ContentEntity";
 import { logger } from "../config/logger";
 import * as uploadUtils from "../utils/upload";
 import path from "path";
@@ -48,7 +52,10 @@ export class ContentService {
   ): Promise<ContentEntity> {
     try {
       // Validate file requirement for image/video content
-      if (!file && (contentData.type === "image" || contentData.type === "video")) {
+      if (
+        !file &&
+        (contentData.type === "image" || contentData.type === "video")
+      ) {
         throw new Error("File required for image or video content");
       }
 
@@ -71,7 +78,11 @@ export class ContentService {
     } catch (error) {
       const err = error as Error;
       logger.error(`Error creating content: ${err.message}`);
-      throw new Error(err.message.includes("File required") ? err.message : "Failed to create content");
+      throw new Error(
+        err.message.includes("File required")
+          ? err.message
+          : "Failed to create content"
+      );
     }
   }
 
@@ -108,16 +119,23 @@ export class ContentService {
         updateData.format = file.mimetype;
       }
 
-      const updatedContent = await this.contentRepository.update(id, updateData);
+      const updatedContent = await this.contentRepository.update(
+        id,
+        updateData
+      );
       if (!updatedContent) {
         throw new Error("Content not found or update failed");
       }
-      
+
       return updatedContent;
     } catch (error) {
       const err = error as Error;
       logger.error(`Error updating content ${id}: ${err.message}`);
-      throw new Error(err.message.includes("not found") ? err.message : "Failed to update content");
+      throw new Error(
+        err.message.includes("not found")
+          ? err.message
+          : "Failed to update content"
+      );
     }
   }
 
@@ -131,8 +149,15 @@ export class ContentService {
       const campaigns = await Campaign.find({ contents: contentObjectId });
 
       if (campaigns.length > 0) {
-        const campaignInfo = campaigns.map((c) => ({ id: c._id, name: c.name }));
-        throw new Error(`Cannot delete content that is used in campaigns: ${JSON.stringify(campaignInfo)}`);
+        const campaignInfo = campaigns.map((c) => ({
+          id: c._id,
+          name: c.name,
+        }));
+        throw new Error(
+          `Cannot delete content that is used in campaigns: ${JSON.stringify(
+            campaignInfo
+          )}`
+        );
       }
 
       // Get content to check for file deletion
@@ -155,14 +180,21 @@ export class ContentService {
     } catch (error) {
       const err = error as Error;
       logger.error(`Error deleting content ${id}: ${err.message}`);
-      throw new Error(err.message.includes("Cannot delete") || err.message.includes("not found") ? err.message : "Failed to delete content");
+      throw new Error(
+        err.message.includes("Cannot delete") ||
+        err.message.includes("not found")
+          ? err.message
+          : "Failed to delete content"
+      );
     }
   }
 
   /**
    * Get content by type
    */
-  async getContentByType(type: "image" | "video" | "html" | "url"): Promise<ContentEntity[]> {
+  async getContentByType(
+    type: "image" | "video" | "html" | "url"
+  ): Promise<ContentEntity[]> {
     try {
       return await this.contentRepository.findByType(type);
     } catch (error) {
@@ -175,7 +207,9 @@ export class ContentService {
   /**
    * Get content by status
    */
-  async getContentByStatus(status: "active" | "inactive"): Promise<ContentEntity[]> {
+  async getContentByStatus(
+    status: "active" | "inactive"
+  ): Promise<ContentEntity[]> {
     try {
       return await this.contentRepository.findByStatus(status);
     } catch (error) {
@@ -193,7 +227,9 @@ export class ContentService {
       return await this.contentRepository.findByCampaignId(campaignId);
     } catch (error) {
       const err = error as Error;
-      logger.error(`Error getting content by campaign ID ${campaignId}: ${err.message}`);
+      logger.error(
+        `Error getting content by campaign ID ${campaignId}: ${err.message}`
+      );
       throw new Error("Failed to retrieve content by campaign");
     }
   }
