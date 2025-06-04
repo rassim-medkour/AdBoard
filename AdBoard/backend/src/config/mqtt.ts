@@ -1,5 +1,6 @@
 import mqtt from "mqtt";
 import { logger } from "./logger";
+import { config } from "./app";
 
 let client: mqtt.MqttClient | null = null;
 
@@ -18,31 +19,29 @@ interface MqttOptions {
 export const connect = (): Promise<mqtt.MqttClient> => {
   return new Promise((resolve, reject) => {
     try {
-      // Get MQTT configuration from environment variables
-      const { MQTT_BROKER_URL, MQTT_USERNAME, MQTT_PASSWORD, MQTT_CLIENT_ID } =
-        process.env; // Configure MQTT connection options
+      // Use centralized config for MQTT configuration
+      const brokerUrl = `mqtt://${config.mqtt.broker}:${config.mqtt.port}`;
+
+      // Configure MQTT connection options
       const options: MqttOptions = {
         clientId:
-          MQTT_CLIENT_ID ||
+          config.mqtt.clientId ||
           `adboard-server-${Math.random().toString(16).substr(2, 8)}`,
         clean: true,
         connectTimeout: 30000, // Increased timeout for more stability
-        username: MQTT_USERNAME,
-        password: MQTT_PASSWORD,
+        username: config.mqtt.username,
+        password: config.mqtt.password,
         reconnectPeriod: 5000, // Longer reconnect period
       };
 
-      if (!MQTT_BROKER_URL) {
-        throw new Error(
-          "MQTT_BROKER_URL is not defined in environment variables"
-        );
-      } // Connect to MQTT broker
-      const mqttUrl = MQTT_BROKER_URL as string;
-      client = mqtt.connect(mqttUrl, options);
+      if (!config.mqtt.broker) {
+        throw new Error("MQTT broker configuration is missing");
+      }
 
-      // Set up event handlers with proper error handling
+      // Connect to MQTT broker
+      client = mqtt.connect(brokerUrl, options); // Set up event handlers with proper error handling
       client.on("connect", () => {
-        logger.info(`Connected to MQTT broker: ${mqttUrl}`);
+        logger.info(`Connected to MQTT broker: ${brokerUrl}`);
 
         // Subscribe to relevant topics with error handling
         client!.subscribe("adboard/devices/#", { qos: 1 }, (err) => {

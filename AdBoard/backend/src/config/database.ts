@@ -1,16 +1,17 @@
 import mongoose from "mongoose";
 import { logger } from "./logger";
+import { config } from "./app";
 
 /**
- * Connects to MongoDB using the URI from environment variables
+ * Connects to MongoDB using the URI from centralized configuration
  */
 export const connectDB = async (): Promise<mongoose.Connection> => {
   try {
-    if (!process.env.MONGODB_URI) {
-      throw new Error("MONGODB_URI is not defined in environment variables");
+    if (!config.database.uri) {
+      throw new Error("Database URI is not defined in configuration");
     }
     // Updated connection options for Mongoose 8
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
+    const conn = await mongoose.connect(config.database.uri);
 
     logger.info(`MongoDB Connected: ${conn.connection.host}`);
     return conn.connection;

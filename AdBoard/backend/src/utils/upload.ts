@@ -3,6 +3,7 @@ import path from "path";
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 import { Request } from "express";
+import { config } from "../config/app";
 
 // Create upload directory if it doesn't exist
 const uploadDir = path.join(__dirname, "../../uploads");
@@ -43,7 +44,7 @@ const fileFilter = (
 export const upload = multer({
   storage: storage,
   limits: {
-    fileSize: parseInt(process.env.MAX_FILE_SIZE || "10485760"), // Default 10MB
+    fileSize: config.upload.maxFileSize,
   },
   fileFilter: fileFilter,
 });
