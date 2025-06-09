@@ -149,7 +149,7 @@ export class ContentController {
         {
           title,
           description,
-          type: type,
+          type,
           url,
           duration,
           status,
