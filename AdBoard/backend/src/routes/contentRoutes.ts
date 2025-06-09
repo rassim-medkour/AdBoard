@@ -81,7 +81,7 @@ export function createContentRoutes(
    *                 type: string
    *               description:
    *                 type: string
-   *               contentType:
+   *               type:
    *                 type: string
    *                 enum: [image, video, html, url]
    *               url:
@@ -96,7 +96,7 @@ export function createContentRoutes(
    *                 format: binary
    *             required:
    *               - title
-   *               - contentType
+   *               - type
    *     responses:
    *       201:
    *         description: Created content
@@ -139,7 +139,7 @@ export function createContentRoutes(
    *                 type: string
    *               description:
    *                 type: string
-   *               contentType:
+   *               type:
    *                 type: string
    *                 enum: [image, video, html, url]
    *               url:

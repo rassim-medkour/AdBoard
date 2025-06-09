@@ -8,7 +8,7 @@ import mongoose, { Document, Schema } from "mongoose";
  *       type: object
  *       required:
  *         - title
- *         - contentType
+ *         - type
  *         - url
  *       properties:
  *         _id:
@@ -20,7 +20,7 @@ import mongoose, { Document, Schema } from "mongoose";
  *         description:
  *           type: string
  *           description: Content description
- *         contentType:
+ *         type:
  *           type: string
  *           enum: [image, video, html, url]
  *           description: Type of content
@@ -48,7 +48,7 @@ import mongoose, { Document, Schema } from "mongoose";
  *         _id: 6476d20ca72e1a842f58a8b4
  *         title: Example Advertisement
  *         description: A promotional banner for example products
- *         contentType: image
+ *         type: image
  *         url: /uploads/example-image.jpg
  *         duration: 15
  *         status: active
@@ -59,7 +59,7 @@ import mongoose, { Document, Schema } from "mongoose";
 export interface IContent extends Document {
   title: string;
   description?: string;
-  contentType: "image" | "video" | "html" | "url";
+  type: "image" | "video" | "html" | "url";
   url: string;
   duration: number;
   status: "active" | "inactive";
@@ -78,7 +78,7 @@ const ContentSchema: Schema = new Schema(
       type: String,
       trim: true,
     },
-    contentType: {
+    type: {
       type: String,
       enum: ["image", "video", "html", "url"],
       required: true,

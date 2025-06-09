@@ -43,7 +43,7 @@ db.campaigns.insertOne({
 // Insert sample content
 db.contents.insertOne({
     title: "Welcome Message",
-    contentType: "image",
+    type: "image",
     url: "/uploads/welcome.jpg",
     duration: 10,
     campaignId: db.campaigns.findOne({ name: "Welcome Campaign" })._id,

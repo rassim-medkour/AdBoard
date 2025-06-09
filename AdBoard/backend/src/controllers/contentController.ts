@@ -100,11 +100,10 @@ export class ContentController {
    *             properties:
    *               title:
    *                 type: string
-   *                 description: Content title
-   *               description:
+   *                 description: Content title   *               description:
    *                 type: string
    *                 description: Content description
-   *               contentType:
+   *               type:
    *                 type: string
    *                 enum: [image, video, html, url]
    *                 description: Type of content
@@ -124,7 +123,7 @@ export class ContentController {
    *                 description: File to upload (required for image and video types)
    *             required:
    *               - title
-   *               - contentType
+   *               - type
    *     responses:
    *       201:
    *         description: Content created successfully
@@ -199,7 +198,7 @@ export class ContentController {
    *               description:
    *                 type: string
    *                 description: Content description
-   *               contentType:
+   *               type:
    *                 type: string
    *                 enum: [image, video, html, url]
    *                 description: Type of content
