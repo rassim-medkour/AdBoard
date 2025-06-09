@@ -19,10 +19,12 @@ import mongoose, { Document, Schema } from "mongoose";
  *           description: Device name
  *         deviceId:
  *           type: string
- *           description: Unique device identifier
- *         location:
+ *           description: Unique device identifier *         location:
  *           type: string
  *           description: Physical location of the device
+ *         description:
+ *           type: string
+ *           description: Device description
  *         status:
  *           type: string
  *           enum: [online, offline, maintenance]
@@ -31,13 +33,18 @@ import mongoose, { Document, Schema } from "mongoose";
  *         lastSeen:
  *           type: string
  *           format: date-time
- *           description: Last time the device connected to the server
- *         screenOrientation:
+ *           description: Last time the device connected to the server *         model:
+ *           type: string
+ *           description: Device model
+ *         screenSize:
+ *           type: string
+ *           description: Physical screen size
+ *         orientation:
  *           type: string
  *           enum: [landscape, portrait]
  *           description: Screen orientation of the device
  *           default: landscape
- *         screenResolution:
+ *         resolution:
  *           type: string
  *           description: Screen resolution in format WIDTHxHEIGHT (e.g., 1920x1080)
  *         createdAt:
@@ -65,10 +72,13 @@ export interface IDevice extends Document {
   name: string;
   deviceId: string;
   location: string;
+  description?: string;
   status: "online" | "offline" | "maintenance";
   lastSeen: Date;
-  screenOrientation: "landscape" | "portrait";
-  screenResolution: string;
+  deviceModel?: string;
+  screenSize?: string;
+  orientation: "landscape" | "portrait";
+  resolution: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -85,8 +95,11 @@ const DeviceSchema: Schema = new Schema(
       required: true,
       unique: true,
       trim: true,
+    },    location: {
+      type: String,
+      trim: true,
     },
-    location: {
+    description: {
       type: String,
       trim: true,
     },
@@ -94,17 +107,24 @@ const DeviceSchema: Schema = new Schema(
       type: String,
       enum: ["online", "offline", "maintenance"],
       default: "offline",
-    },
-    lastSeen: {
+    },    lastSeen: {
       type: Date,
       default: Date.now,
     },
-    screenOrientation: {
+    deviceModel: {
+      type: String,
+      trim: true,
+    },
+    screenSize: {
+      type: String,
+      trim: true,
+    },
+    orientation: {
       type: String,
       enum: ["landscape", "portrait"],
       default: "landscape",
     },
-    screenResolution: {
+    resolution: {
       type: String,
       default: "1920x1080",
     },

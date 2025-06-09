@@ -11,7 +11,7 @@ export interface DeviceEntity extends BaseEntity {
   description?: string;
   status: "online" | "offline" | "maintenance";
   lastSeen?: Date;
-  model?: string;
+  deviceModel?: string;
   screenSize?: string;
   orientation?: "portrait" | "landscape";
   resolution?: string;
@@ -26,7 +26,7 @@ export interface CreateDeviceDto {
   location: string;
   description?: string;
   status?: "online" | "offline" | "maintenance";
-  model?: string;
+  deviceModel?: string;
   screenSize?: string;
   orientation?: "portrait" | "landscape";
   resolution?: string;
@@ -43,7 +43,7 @@ export interface UpdateDeviceDto {
   description?: string;
   status?: "online" | "offline" | "maintenance";
   lastSeen?: Date;
-  model?: string;
+  deviceModel?: string;
   screenSize?: string;
   orientation?: "portrait" | "landscape";
   resolution?: string;
