@@ -1,9 +1,5 @@
 import { BaseRepository } from "./BaseRepository";
-import {
-  ContentEntity,
-  CreateContentDto,
-  UpdateContentDto,
-} from "../entities/ContentEntity";
+import { ContentEntity } from "../entities/ContentEntity";
 
 /**
  * Content repository interface

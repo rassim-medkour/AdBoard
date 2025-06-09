@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { logger } from "../config/logger";
 import { ContentService } from "../services/ContentService";
-
 export class ContentController {
   private contentService: ContentService;
 
@@ -144,14 +143,13 @@ export class ContentController {
     res: Response
   ): Promise<Response> => {
     try {
-      const { title, description, contentType, duration, status, url } =
-        req.body;
+      const { title, description, type, duration, status, url } = req.body;
 
       const content = await this.contentService.createContent(
         {
           title,
           description,
-          type: contentType,
+          type: type,
           url,
           duration,
           status,
@@ -239,15 +237,14 @@ export class ContentController {
     res: Response
   ): Promise<Response> => {
     try {
-      const { title, description, contentType, duration, status, url } =
-        req.body;
+      const { title, description, type, duration, status, url } = req.body;
 
       const content = await this.contentService.updateContent(
         req.params.id,
         {
           title,
           description,
-          type: contentType,
+          type,
           url,
           duration,
           status,

@@ -1,4 +1,4 @@
-import { BaseEntity } from './BaseEntity';
+import { BaseEntity } from "./BaseEntity";
 
 /**
  * Content domain entity
@@ -12,8 +12,8 @@ export interface ContentEntity extends BaseEntity {
   duration?: number; // Duration in seconds for videos
   size?: number; // File size in bytes
   format?: string; // File format or MIME type
-  status: 'active' | 'inactive';
-  metadata?: Record<string, any>; // Additional metadata
+  status: "active" | "inactive";
+  metadata?: Record<string, unknown>; // Additional metadata
 }
 
 /**
@@ -27,8 +27,8 @@ export interface CreateContentDto {
   duration?: number;
   size?: number;
   format?: string;
-  status?: 'active' | 'inactive';
-  metadata?: Record<string, any>;
+  status?: "active" | "inactive";
+  metadata?: Record<string, unknown>;
 }
 
 /**
@@ -43,6 +43,6 @@ export interface UpdateContentDto {
   duration?: number;
   size?: number;
   format?: string;
-  status?: 'active' | 'inactive';
-  metadata?: Record<string, any>;
+  status?: "active" | "inactive";
+  metadata?: Record<string, unknown>;
 }

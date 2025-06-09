@@ -25,21 +25,24 @@ export class MongoContentRepository implements ContentRepository {
    * Converts a Mongoose document to a content entity
    * @param doc - The Mongoose document
    * @returns The content entity or null if the document is null
-   */
-  private toEntity(doc: any): ContentEntity | null {
+   */ private toEntity(doc: any): ContentEntity | null {
     if (!doc) return null;
 
-    return {
+    const entity: ContentEntity = {
       id: doc._id.toString(),
       title: doc.title,
       description: doc.description,
       type: doc.type,
       url: doc.url,
-      data: doc.data,
-      status: doc.status,
+      duration: doc.duration,
+      size: doc.size,
+      format: doc.format,
+      status: doc.status as "active" | "inactive",
+      metadata: doc.metadata || {},
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };
+    return entity;
   }
 
   /**
@@ -67,8 +70,7 @@ export class MongoContentRepository implements ContentRepository {
    * Finds content by type
    * @param type - The content type to filter by
    * @returns Promise resolving to an array of content entities
-   */
-  async findByType(
+   */ async findByType(
     type: "image" | "video" | "html" | "url"
   ): Promise<ContentEntity[]> {
     const contents = await this.contentModel.find({ type });
