@@ -1,5 +1,5 @@
 import { Model } from "mongoose";
-import { Device } from "../models";
+import { Device, IDevice } from "../models";
 import { DeviceEntity } from "../domain/entities/DeviceEntity";
 import { DeviceRepository } from "../domain/repositories/DeviceRepository";
 
@@ -7,7 +7,7 @@ import { DeviceRepository } from "../domain/repositories/DeviceRepository";
  * MongoDB implementation of the DeviceRepository interface
  */
 export class MongoDeviceRepository implements DeviceRepository {
-  private deviceModel: Model<any>;
+  private deviceModel: Model<IDevice>;
 
   /**
    * Creates a new MongoDeviceRepository
@@ -16,7 +16,6 @@ export class MongoDeviceRepository implements DeviceRepository {
   constructor(deviceModel = Device) {
     this.deviceModel = deviceModel;
   }
-
   /**
    * Converts a Mongoose document to a device entity
    * @param doc - The Mongoose document
@@ -30,10 +29,12 @@ export class MongoDeviceRepository implements DeviceRepository {
       name: doc.name,
       deviceId: doc.deviceId,
       location: doc.location,
+      description: doc.description,
       status: doc.status,
       lastSeen: doc.lastSeen,
-      screenOrientation: doc.screenOrientation,
-      screenResolution: doc.screenResolution,
+      screenSize: doc.screenSize,
+      orientation: doc.orientation,
+      resolution: doc.resolution,
       createdAt: doc.createdAt,
       updatedAt: doc.updatedAt,
     };
@@ -135,7 +136,7 @@ export class MongoDeviceRepository implements DeviceRepository {
    * @param status - The new status
    * @returns Promise resolving to the updated device entity or null if not found
    */
-  async updateDeviceStatus(
+  async updateStatus(
     deviceId: string,
     status: "online" | "offline" | "maintenance"
   ): Promise<DeviceEntity | null> {
