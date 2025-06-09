@@ -1,5 +1,5 @@
-import { BaseRepository } from './BaseRepository';
-import { CampaignEntity, CreateCampaignDto, UpdateCampaignDto } from '../entities/CampaignEntity';
+import { BaseRepository } from "./BaseRepository";
+import { CampaignEntity } from "../entities/CampaignEntity";
 
 /**
  * Campaign repository interface
@@ -11,15 +11,17 @@ export interface CampaignRepository extends BaseRepository<CampaignEntity> {
    * @param status - The status to filter by
    * @returns Promise resolving to an array of campaigns
    */
-  findByStatus(status: 'draft' | 'active' | 'paused' | 'completed'): Promise<CampaignEntity[]>;
-  
+  findByStatus(
+    status: "draft" | "active" | "paused" | "completed"
+  ): Promise<CampaignEntity[]>;
+
   /**
    * Find active campaigns for a device
    * @param deviceId - The device ID
    * @returns Promise resolving to an array of campaigns
    */
   findActiveForDevice(deviceId: string): Promise<CampaignEntity[]>;
-  
+
   /**
    * Find campaigns by date range
    * @param startDate - The start date
@@ -27,20 +29,26 @@ export interface CampaignRepository extends BaseRepository<CampaignEntity> {
    * @returns Promise resolving to an array of campaigns
    */
   findByDateRange(startDate: Date, endDate: Date): Promise<CampaignEntity[]>;
-  
+
   /**
    * Add content to a campaign
    * @param campaignId - The campaign ID
    * @param contentId - The content ID to add
    * @returns Promise resolving to the updated campaign or null if not found
    */
-  addContent(campaignId: string, contentId: string): Promise<CampaignEntity | null>;
-  
+  addContent(
+    campaignId: string,
+    contentId: string
+  ): Promise<CampaignEntity | null>;
+
   /**
    * Remove content from a campaign
    * @param campaignId - The campaign ID
    * @param contentId - The content ID to remove
    * @returns Promise resolving to the updated campaign or null if not found
    */
-  removeContent(campaignId: string, contentId: string): Promise<CampaignEntity | null>;
+  removeContent(
+    campaignId: string,
+    contentId: string
+  ): Promise<CampaignEntity | null>;
 }
