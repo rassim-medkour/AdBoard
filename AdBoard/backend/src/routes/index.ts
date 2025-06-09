@@ -1,14 +1,16 @@
 import express from "express";
 import userRoutes from "./userRoutes";
-import deviceRoutes from "./deviceRoutes";
+import { createDeviceRoutes } from "./deviceRoutes";
 import { createContentRoutes } from "./contentRoutes";
 import campaignRoutes from "./campaignRoutes";
 import authRoutes from "./authRoutes";
 import { ContentController } from "../controllers/contentController";
+import { DeviceController } from "../controllers/deviceController";
 
 // Interface for all controllers that will be injected
 export interface Controllers {
   contentController: ContentController;
+  deviceController: DeviceController;
   // Add other controllers here as we convert them
 }
 
@@ -35,7 +37,7 @@ export function createRoutes(controllers: Controllers): express.Router {
   // Routes - some still use old pattern, will be converted progressively
   router.use("/auth", authRoutes);
   router.use("/users", userRoutes);
-  router.use("/devices", deviceRoutes);
+  router.use("/devices", createDeviceRoutes(controllers.deviceController));
   router.use("/content", createContentRoutes(controllers.contentController));
   router.use("/campaigns", campaignRoutes);
 
