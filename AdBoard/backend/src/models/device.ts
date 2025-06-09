@@ -95,7 +95,8 @@ const DeviceSchema: Schema = new Schema(
       required: true,
       unique: true,
       trim: true,
-    },    location: {
+    },
+    location: {
       type: String,
       trim: true,
     },
@@ -107,7 +108,8 @@ const DeviceSchema: Schema = new Schema(
       type: String,
       enum: ["online", "offline", "maintenance"],
       default: "offline",
-    },    lastSeen: {
+    },
+    lastSeen: {
       type: Date,
       default: Date.now,
     },
