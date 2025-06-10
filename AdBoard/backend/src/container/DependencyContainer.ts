@@ -5,15 +5,19 @@
 import { MongoContentRepository } from "../repositories/MongoContentRepository";
 import { MongoDeviceRepository } from "../repositories/MongoDeviceRepository";
 import { MongoCampaignRepository } from "../repositories/MongoCampaignRepository";
+import { MongoUserRepository } from "../repositories/MongoUserRepository";
 import { ContentService } from "../services/ContentService";
 import { DeviceService } from "../services/DeviceService";
 import { CampaignService } from "../services/CampaignService";
+import { UserService } from "../services/UserService";
 import { ContentController } from "../controllers/contentController";
 import { DeviceController } from "../controllers/deviceController";
 import { CampaignController } from "../controllers/campaignController";
+import { UserController } from "../controllers/userController";
 import { ContentRepository } from "../domain/repositories/ContentRepository";
 import { DeviceRepository } from "../domain/repositories/DeviceRepository";
 import { CampaignRepository } from "../domain/repositories/CampaignRepository";
+import { UserRepository } from "../domain/repositories/UserRepository";
 
 export class DependencyContainer {
   private static instance: DependencyContainer;
@@ -22,16 +26,19 @@ export class DependencyContainer {
   private _contentRepository?: ContentRepository;
   private _deviceRepository?: DeviceRepository;
   private _campaignRepository?: CampaignRepository;
+  private _userRepository?: UserRepository;
 
   // Services
   private _contentService?: ContentService;
   private _deviceService?: DeviceService;
   private _campaignService?: CampaignService;
+  private _userService?: UserService;
 
   // Controllers
   private _contentController?: ContentController;
   private _deviceController?: DeviceController;
   private _campaignController?: CampaignController;
+  private _userController?: UserController;
 
   private constructor() {}
 
@@ -62,6 +69,13 @@ export class DependencyContainer {
     }
     return this._campaignRepository;
   }
+
+  get userRepository(): UserRepository {
+    if (!this._userRepository) {
+      this._userRepository = new MongoUserRepository();
+    }
+    return this._userRepository;
+  }
   // Service getters (lazy initialization with dependency injection)
   get contentService(): ContentService {
     if (!this._contentService) {
@@ -83,6 +97,13 @@ export class DependencyContainer {
     }
     return this._campaignService;
   }
+
+  get userService(): UserService {
+    if (!this._userService) {
+      this._userService = new UserService(this.userRepository);
+    }
+    return this._userService;
+  }
   // Controller getters (lazy initialization with dependency injection)
   get contentController(): ContentController {
     if (!this._contentController) {
@@ -103,16 +124,25 @@ export class DependencyContainer {
       this._campaignController = new CampaignController(this.campaignService);
     }
     return this._campaignController;
+  }
+
+  get userController(): UserController {
+    if (!this._userController) {
+      this._userController = new UserController(this.userService);
+    }
+    return this._userController;
   }  // Method to get all controllers (for route factory)
   getControllers(): {
     contentController: ContentController;
     deviceController: DeviceController;
     campaignController: CampaignController;
+    userController: UserController;
   } {
     return {
       contentController: this.contentController,
       deviceController: this.deviceController,
       campaignController: this.campaignController,
+      userController: this.userController,
     };
   }
   // Method to reset container (useful for testing)
@@ -120,11 +150,14 @@ export class DependencyContainer {
     this._contentRepository = undefined;
     this._deviceRepository = undefined;
     this._campaignRepository = undefined;
+    this._userRepository = undefined;
     this._contentService = undefined;
     this._deviceService = undefined;
     this._campaignService = undefined;
+    this._userService = undefined;
     this._contentController = undefined;
     this._deviceController = undefined;
     this._campaignController = undefined;
+    this._userController = undefined;
   }
 }
