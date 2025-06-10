@@ -1,18 +1,20 @@
 import express from "express";
-import userRoutes from "./userRoutes";
 import { createDeviceRoutes } from "./deviceRoutes";
 import { createContentRoutes } from "./contentRoutes";
 import { createCampaignRoutes } from "./campaignRoutes";
+import { createUserRoutes } from "./userRoutes";
 import authRoutes from "./authRoutes";
 import { ContentController } from "../controllers/contentController";
 import { DeviceController } from "../controllers/deviceController";
 import { CampaignController } from "../controllers/campaignController";
+import { UserController } from "../controllers/userController";
 
 // Interface for all controllers that will be injected
 export interface Controllers {
   contentController: ContentController;
   deviceController: DeviceController;
   campaignController: CampaignController;
+  userController: UserController;
   // Add other controllers here as we convert them
 }
 
@@ -34,10 +36,9 @@ export function createRoutes(controllers: Controllers): express.Router {
         "/api/docs", // Added Swagger docs endpoint
       ],
     });
-  });
-  // Routes - some still use old pattern, will be converted progressively
+  });  // Routes - some still use old pattern, will be converted progressively
   router.use("/auth", authRoutes);
-  router.use("/users", userRoutes);
+  router.use("/users", createUserRoutes(controllers.userController));
   router.use("/devices", createDeviceRoutes(controllers.deviceController));
   router.use("/content", createContentRoutes(controllers.contentController));
   router.use("/campaigns", createCampaignRoutes(controllers.campaignController));
